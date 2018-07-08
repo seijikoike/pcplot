@@ -1,0 +1,166 @@
+---
+title: "STAA 574: Principal Component Plots using pcplot() Function"
+author: "Seiji Koike"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{STAA 574: Principal Component Plots using pcplot() Function}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+So by now you've understood the importance and mechanics of Principal Component Analysis (PCA) and you've managed to create beautiful and informative graphs thereof. With this knowledge in mind, it would be nice to automatically create beautiful plots so as to effectively move forward with your analysis. This is where the `pcplot()` function in the `pcplot` package comes in. 
+
+#Basics 
+
+`pcplot()` plots one principal component against another using the `ggplot()` function in order to visualize the variation in the data. For this example we will use the famous `iris` dataset in the standard R library.
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+data("iris")
+head(iris)
+```
+
+Suppose we wish to conduct a PCA on this dataset using `pcplot()`. The simplest plot requires the data and which principal components we wish to display:
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+library(pcplot)
+library(ggplot2)
+
+pcplot(iris[, -5], 1, 2)
+```
+
+Note that the first four columns of the iris dataset contain the plant measurements, which is why we omit the fifth column indicating the species. The next argument tells `pcplot()` to plot the first PC on the x-axis, and the following argument tells it to plot the second on the y-axis. We could easily switch this up:
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+pcplot(iris[, -5], 4, 3)
+```
+
+Here the fourth PC is on the x-axis and the third PC is on the y-axis. 
+
+The percentages following the axis label indicates the amount of variation in the data attributed by that PC. You might wonder where the percentages come from, which brings up an important point: `pcplot()` by default uses the sample CORRELATION matrix, not the sample covariance matrix. To explain this, let's look at the `princomp()` function used in `pcplot()`.
+
+First we use `princomp()` on the iris dataset and look at the variances:
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+irispc <- princomp(iris[, -5], cor = TRUE)
+irispc$sdev^2
+```
+
+Now simply divide by the sum of the variances to find the amount contributed by each PC:
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+irispc$sdev^2 / sum(irispc$sdev^2)
+```
+
+This also works for the covariance matrix as well.
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+iriscov <- princomp(iris[, -5])
+iriscov$sdev^2 / sum(iriscov$sdev^2)
+```
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+pcplot(iris[, -5], 1, 2, cor = FALSE)
+```
+
+Now suppose that we have different groups in our dataset, as we do for the `iris` dataset. We can indicate which group each point belongs to using the `group` argument in the function:
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+pcplot(iris[, -5], 1, 2, group = iris$Species)
+```
+
+If there are any sort of unusual observations in the data as well, we can find out which ones they are using the `labelled` argument:
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+pcplot(iris[, -5], 1, 2, group = iris$Species, labelled = TRUE)
+```
+
+The `labelled` argument uses the row names of the dataset, which defaults to the observation number if there are no specific row names. The `USArrests` dataset for example uses state names, so a PC plot of that would look like the following.
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+data("USArrests")
+pcplot(USArrests, 1, 2, labelled = TRUE)
+```
+
+#Advanced
+Suppose you are a `ggplot` wizard and you don't quite like the default look outputted by `pcplot()`. You can control the aesthetics of the graph by adding in the argument `control = TRUE`.
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+irisplot <- pcplot(iris[, -5], 1, 2, control = TRUE)
+irisplot
+```
+
+Because `pcplot()` is a `ggplot` object, it requires additional arguments (aesthetics) to plot more than a blank graph. For example we can get the basic PC plot of the `iris` data just by adding `geom_point()`:
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+irisplot + geom_point()
+```
+
+With this *tabula rasa* you can customize the graph to your heart's desire. For example, suppose that I not only want the color, but also the shape of the points to indicate the flower's species. I can then write
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+irisplot <- irisplot + geom_point(aes(shape = iris$Species, colour = iris$Species))
+irisplot
+```
+
+Now I'm not crazy about the legend title, nor the fact that the species are lower case. This is no problem! We can just continue adding on aesthetics:
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+irisplot <- irisplot + 
+  labs(title = "PC Plot of Iris Data", colour = "Species", shape = "Species") + 
+  scale_colour_discrete(labels = c("Setosa", "Veriscolor", "Virginica")) + 
+  scale_shape_discrete(labels = c("Setosa", "Veriscolor", "Virginica"))
+irisplot
+```
+
+We can change the increment of the tick marks on the x-axis:
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+irisplot <- irisplot +
+  scale_x_continuous(breaks = seq(-3, 3, 1))
+irisplot
+```
+
+We can mess around with the background and title colors:
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+irisplot <- irisplot + 
+  theme(panel.grid.minor = element_line(colour = "grey80"),
+        panel.background = element_rect(fill = "lightblue"),
+        axis.title = element_text(size = 18, colour = "red"),
+        plot.title = element_text(colour = "sienna4"))
+irisplot
+```
+
+And even manually change the color and shape of the points.  
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+irisplot <- irisplot +
+  scale_colour_manual(values = c("orange", "purple", "orangered2"),
+                      labels = c("Setosa", "Versicolor", "Virginica")) + 
+  scale_shape_manual(values = c(17, 19, 24),
+                     labels = c("Setosa", "Versicolor", "Virginica"))
+irisplot
+```
+
+Note: Here we will get the warning `Scale for 'colour' is already present` and `Scale for 'shape' is already present` because we defined `irisplot` with `scale_colour_discrete` and `scale_shape_discrete` earlier. `ggplot()` will update the plot with the most recent scale, but it's best to just stick with one to avoid this warning, so the entirety of this last plot comes from the following code:
+
+```{r eval = FALSE}
+irisplot <- pcplot(iris[, -5], 1, 2, control = TRUE)
+irisplot + 
+  geom_point(aes(shape = iris$Species, colour = iris$Species)) + 
+  labs(title = "PC Plot of Iris Data", colour = "Species", shape = "Species") + 
+  scale_x_continuous(breaks = seq(-3, 3, 1)) + 
+  theme(panel.grid.minor = element_line(colour = "grey80"),
+        panel.background = element_rect(fill = "lightblue"),
+        axis.title = element_text(size = 18, colour = "red"),
+        plot.title = element_text(colour = "sienna4")) + 
+  scale_colour_manual(values = c("orange", "purple", "orangered2"),
+                      labels = c("Setosa", "Versicolor", "Virginica")) + 
+  scale_shape_manual(values = c(17, 19, 24),
+                     labels = c("Setosa", "Versicolor", "Virginica"))
+```
+
+Of course it goes without saying that just because you *can* do something does not mean that you *should*; never add anything which doesn't contribute to the understanding of the data. 
+
+Alright, that's just about it! I hope you find this tool useful as you move forward in the remaining days of the MAS program and beyond. 

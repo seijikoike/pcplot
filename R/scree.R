@@ -3,14 +3,14 @@
 #' Takes a princomp object and returns a scree plot using ggplot2
 #' @param data A set of predictor values
 #' @param cor Indicates to use correlation for PCA. Defaults to TRUE
-#' @param rounded Rounds the contribution of a PC to a specific number of decimal places. Defaults to 4.
+#' @param round Rounds the contribution of a PC to a specific number of decimal places. Defaults to 4.
 #' @param cumulative Tells scree whether to display the cumulative contribution of PCs or the individual. Defaults to TRUE.
 #' @keywords screeplot
 #' @keywords princomp
 #' @export
 #' @examples
 #' data(trees)
-#' scree(trees, cor = TRUE, rounded = 2)
+#' scree(trees, cor = TRUE, round = 2)
 
 scree <- function(data, cor = TRUE, round = 4, cumulative = TRUE){
   x <- princomp(data, cor = cor)

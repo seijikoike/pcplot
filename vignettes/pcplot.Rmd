@@ -164,3 +164,29 @@ irisplot +
 Of course it goes without saying that just because you *can* do something does not mean that you *should*; never add anything which doesn't contribute to the understanding of the data. 
 
 Alright, that's just about it! I hope you find this tool useful as you move forward in the remaining days of the MAS program and beyond. 
+
+##Update: Biplot
+
+One of the useful results of PCA is the detection of outliers, for example in the 'iris' example we saw clear separation between the Setosa species and the other two. We might naturally wonder how this species differs. Well we can use the 'biplot = TRUE' argument to plot the vectors of loadings on the graph:
+
+```{r fig.align = 'center', fig.height = 4, fig.width = 5}
+pcplot(iris[, -5], 1, 2, group = iris$Species, biplot = TRUE)
+```
+
+Recall that the loadings are the "weights" that each variable has on a PC, that is, how much the original variables "load" on the principal components. We can see that in this example, petal size loads much more on the first PC than on the second. Indeed if we use the 'princomp' function and examine the loadings, we'll see that the first PC can be thought of as a contrast between sepal width and the average of the other measurements, while we interpret the second PC as the overall sepal size (ignoring petal size altogether).  
+
+```{r}
+pc <- princomp(iris[, -5], cor = TRUE)
+pc$loadings
+```
+
+What do these loading vectors tell us, then? They tell us that Setosa species typically has a much larger sepal width than compared to its other measurements, but has a similar "overall" sepal size: 
+
+```{r}
+tapply(iris$Petal.Length, INDEX = iris$Species, summary)
+tapply(iris$Petal.Width, INDEX = iris$Species, summary)
+tapply(iris$Sepal.Length, INDEX = iris$Species, summary)
+tapply(iris$Sepal.Width, INDEX = iris$Species, summary)
+```
+
+

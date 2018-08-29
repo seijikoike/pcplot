@@ -11,16 +11,16 @@ scree(data, cor = TRUE, round = 4, cumulative = TRUE)
 
 \item{cor}{Indicates to use correlation for PCA. Defaults to TRUE}
 
-\item{cumulative}{Tells scree whether to display the cumulative contribution of PCs or the individual. Defaults to TRUE.}
+\item{round}{Rounds the contribution of a PC to a specific number of decimal places. Defaults to 4.}
 
-\item{rounded}{Rounds the contribution of a PC to a specific number of decimal places. Defaults to 4.}
+\item{cumulative}{Tells scree whether to display the cumulative contribution of PCs or the individual. Defaults to TRUE.}
 }
 \description{
 Takes a princomp object and returns a scree plot using ggplot2
 }
 \examples{
 data(trees)
-scree(trees, cor = TRUE, rounded = 2)
+scree(trees, cor = TRUE, round = 2)
 }
 \keyword{princomp}
 \keyword{screeplot}

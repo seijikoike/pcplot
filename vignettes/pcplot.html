@@ -12,7 +12,7 @@
 
 <meta name="author" content="Seiji Koike" />
 
-<meta name="date" content="2018-07-08" />
+<meta name="date" content="2018-08-29" />
 
 <title>STAA 574: Principal Component Plots using pcplot() Function</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">STAA 574: Principal Component Plots using pcplot() Function</h1>
 <h4 class="author"><em>Seiji Koike</em></h4>
-<h4 class="date"><em>2018-07-08</em></h4>
+<h4 class="date"><em>2018-08-29</em></h4>
 
 
 
@@ -186,6 +186,76 @@ irisplot <span class="op">+</span><span class="st"> </span>
                      <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Setosa&quot;</span>, <span class="st">&quot;Versicolor&quot;</span>, <span class="st">&quot;Virginica&quot;</span>))</code></pre></div>
 <p>Of course it goes without saying that just because you <em>can</em> do something does not mean that you <em>should</em>; never add anything which doesn’t contribute to the understanding of the data.</p>
 <p>Alright, that’s just about it! I hope you find this tool useful as you move forward in the remaining days of the MAS program and beyond.</p>
+<div id="update-biplot" class="section level2">
+<h2>Update: Biplot</h2>
+<p>One of the useful results of PCA is the detection of outliers, for example in the ‘iris’ example we saw clear separation between the Setosa species and the other two. We might naturally wonder how this species differs. Well we can use the ‘biplot = TRUE’ argument to plot the vectors of loadings on the graph:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pcplot</span>(iris[, <span class="op">-</span><span class="dv">5</span>], <span class="dv">1</span>, <span class="dv">2</span>, <span class="dt">group =</span> iris<span class="op">$</span>Species, <span class="dt">biplot =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>Recall that the loadings are the “weights” that each variable has on a PC, that is, how much the original variables “load” on the principal components. We can see that in this example, petal size loads much more on the first PC than on the second. Indeed if we use the ‘princomp’ function and examine the loadings, we’ll see that the first PC can be thought of as a contrast between sepal width and the average of the other measurements, while we interpret the second PC as the overall sepal size (ignoring petal size altogether).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pc &lt;-<span class="st"> </span><span class="kw">princomp</span>(iris[, <span class="op">-</span><span class="dv">5</span>], <span class="dt">cor =</span> <span class="ot">TRUE</span>)
+pc<span class="op">$</span>loadings</code></pre></div>
+<pre><code>## 
+## Loadings:
+##              Comp.1 Comp.2 Comp.3 Comp.4
+## Sepal.Length  0.521 -0.377  0.720  0.261
+## Sepal.Width  -0.269 -0.923 -0.244 -0.124
+## Petal.Length  0.580        -0.142 -0.801
+## Petal.Width   0.565        -0.634  0.524
+## 
+##                Comp.1 Comp.2 Comp.3 Comp.4
+## SS loadings      1.00   1.00   1.00   1.00
+## Proportion Var   0.25   0.25   0.25   0.25
+## Cumulative Var   0.25   0.50   0.75   1.00</code></pre>
+<p>What do these loading vectors tell us, then? They tell us that Setosa species typically has a much larger sepal width than compared to its other measurements, but has a similar “overall” sepal size:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(iris<span class="op">$</span>Petal.Length, <span class="dt">INDEX =</span> iris<span class="op">$</span>Species, summary)</code></pre></div>
+<pre><code>## $setosa
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   1.400   1.500   1.462   1.575   1.900 
+## 
+## $versicolor
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    3.00    4.00    4.35    4.26    4.60    5.10 
+## 
+## $virginica
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   4.500   5.100   5.550   5.552   5.875   6.900</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(iris<span class="op">$</span>Petal.Width, <span class="dt">INDEX =</span> iris<span class="op">$</span>Species, summary)</code></pre></div>
+<pre><code>## $setosa
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.100   0.200   0.200   0.246   0.300   0.600 
+## 
+## $versicolor
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   1.200   1.300   1.326   1.500   1.800 
+## 
+## $virginica
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.400   1.800   2.000   2.026   2.300   2.500</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(iris<span class="op">$</span>Sepal.Length, <span class="dt">INDEX =</span> iris<span class="op">$</span>Species, summary)</code></pre></div>
+<pre><code>## $setosa
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   4.300   4.800   5.000   5.006   5.200   5.800 
+## 
+## $versicolor
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   4.900   5.600   5.900   5.936   6.300   7.000 
+## 
+## $virginica
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   4.900   6.225   6.500   6.588   6.900   7.900</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(iris<span class="op">$</span>Sepal.Width, <span class="dt">INDEX =</span> iris<span class="op">$</span>Species, summary)</code></pre></div>
+<pre><code>## $setosa
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   2.300   3.200   3.400   3.428   3.675   4.400 
+## 
+## $versicolor
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   2.000   2.525   2.800   2.770   3.000   3.400 
+## 
+## $virginica
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   2.200   2.800   3.000   2.974   3.175   3.800</code></pre>
+</div>
 </div>
 
 

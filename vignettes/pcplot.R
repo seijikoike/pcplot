@@ -89,3 +89,16 @@ irisplot
 #    scale_shape_manual(values = c(17, 19, 24),
 #                       labels = c("Setosa", "Versicolor", "Virginica"))
 
+## ----fig.align = 'center', fig.height = 4, fig.width = 5-----------------
+pcplot(iris[, -5], 1, 2, group = iris$Species, biplot = TRUE)
+
+## ------------------------------------------------------------------------
+pc <- princomp(iris[, -5], cor = TRUE)
+pc$loadings
+
+## ------------------------------------------------------------------------
+tapply(iris$Petal.Length, INDEX = iris$Species, summary)
+tapply(iris$Petal.Width, INDEX = iris$Species, summary)
+tapply(iris$Sepal.Length, INDEX = iris$Species, summary)
+tapply(iris$Sepal.Width, INDEX = iris$Species, summary)
+

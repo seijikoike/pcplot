@@ -8,6 +8,7 @@
 #' @param control Indicates if user wants to customize ggplot rather than the default setting. Defaults to FALSE.
 #' @param group A vector indicating which group the observation belongs to. Defaults to NA.
 #' @param labelled Indicates whether or not to label the observations. Defaults to FALSE.
+#' @param biplot Allows user to plot vectors of loadings of each variable
 #' @keywords PCA
 #' @keywords princomp
 #' @examples
@@ -21,14 +22,22 @@
 #' pcplot(longley[,-c(6:8)], 1, 2, group = longley$Group, labelled = TRUE)
 #' @export
 
-pcplot <- function(data, xpc, ypc, cor = TRUE, control = FALSE, group = NA, labelled = FALSE){
+pcplot <- function(data, xpc, ypc, cor = TRUE, control = FALSE, group = NA, labelled = FALSE, biplot = FALSE){
   pcomp <- princomp(data, cor = cor)
   Ys <- pcomp$scores
   perc <- pcomp$sdev^2
 
-  data <- data.frame(X = Ys[,xpc], Y = Ys[,ypc])
+  df <- data.frame(X = Ys[,xpc], Y = Ys[,ypc])
 
-  p <- ggplot(data, aes(X, Y)) +
+  loadings.mat <- matrix(NA, ncol(data), ncol(data))
+  for(i in 1:ncol(data)){
+    loadings.mat[, i] <- pcomp$loadings[, i]
+  }
+  loadings.df <- as.data.frame(loadings.mat)
+  rownames(loadings.df) <- rownames(pcomp$loadings)
+  colnames(loadings.df) <- colnames(pcomp$loadings)
+
+  p <- ggplot(df, aes(X, Y)) +
     xlab(paste("Component ", xpc, "- ", round(perc[xpc]/sum(perc) * 100, 2), "%", sep = "")) +
     ylab(paste("Component ", ypc, "- ", round(perc[ypc]/sum(perc) * 100, 2), "%", sep = "")) +
     ggtitle("Principal Component Graph") +
@@ -37,9 +46,10 @@ pcplot <- function(data, xpc, ypc, cor = TRUE, control = FALSE, group = NA, labe
           panel.grid.minor = element_line(colour = "grey80"),
           axis.line = element_line(colour = "black"))
 
+
   if(control == FALSE){
     if(labelled == TRUE){
-      obs <- rownames(data)
+      obs <- rownames(df)
       cbind(data, obs)
       if(sum(is.na(group)) == 0){
        p <- p + geom_text(aes(label = obs, colour = factor(group)), vjust = -.8)} +
@@ -47,15 +57,21 @@ pcplot <- function(data, xpc, ypc, cor = TRUE, control = FALSE, group = NA, labe
       else{p <- p + geom_text(aes(label = obs))}
     }
     if(sum(is.na(group)) == 0){
-     cbind(data, group)
+     cbind(df, group)
      p <- p + geom_point(aes(colour = factor(group))) +
         labs(colour = "Group: ")
     }
     if(sum(is.na(group)) != 0 & labelled == FALSE){
      p <- p + geom_point()
     }
-    return(p)
+    if(biplot == TRUE){
+      p <- p +
+        geom_segment(data = loadings.df, aes(x = 0, y = 0, xend = loadings.df[, xpc], yend = loadings.df[, ypc]),
+                     arrow = arrow(length = unit(0.1, "inches"))) +
+        geom_text(data = loadings.df, aes(loadings.df[, xpc], loadings.df[, ypc], label = rownames(loadings.df), hjust = -.25))
     }
- else{return(p)}
+  }
+  return(p)
 }
+
 

@@ -5,7 +5,7 @@
 \title{Principal Component Plots}
 \usage{
 pcplot(data, xpc, ypc, cor = TRUE, control = FALSE, group = NA,
-  labelled = FALSE)
+  labelled = FALSE, biplot = FALSE)
 }
 \arguments{
 \item{data}{A set of predictor values}
@@ -21,6 +21,8 @@ pcplot(data, xpc, ypc, cor = TRUE, control = FALSE, group = NA,
 \item{group}{A vector indicating which group the observation belongs to. Defaults to NA.}
 
 \item{labelled}{Indicates whether or not to label the observations. Defaults to FALSE.}
+
+\item{biplot}{Allows user to plot vectors of loadings of each variable}
 }
 \description{
 Takes a data set and plots principal components against each other with ggplot.

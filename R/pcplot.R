@@ -66,9 +66,13 @@ pcplot <- function(data, xpc, ypc, cor = TRUE, control = FALSE, group = NA, labe
     }
     if(biplot == TRUE){
       p <- p +
-        geom_segment(data = loadings.df, aes(x = 0, y = 0, xend = loadings.df[, xpc], yend = loadings.df[, ypc]),
-                     arrow = arrow(length = unit(0.1, "inches"))) +
-        geom_text(data = loadings.df, aes(loadings.df[, xpc], loadings.df[, ypc], label = rownames(loadings.df), hjust = -.25))
+        geom_segment(data = loadings.df,
+                     aes(x = 0, y = 0, xend = loadings.df[, xpc], yend = loadings.df[, ypc]),
+                     arrow = arrow(length = unit(0.1, "inches")),
+                     colour = "red") +
+        geom_text(data = loadings.df,
+                  aes(loadings.df[, xpc], loadings.df[, ypc], label = rownames(loadings.df), hjust = -.25),
+                  colour = "red")
     }
   }
   return(p)

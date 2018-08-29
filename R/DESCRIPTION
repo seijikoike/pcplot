@@ -1,0 +1,11 @@
+Package: pcplot
+Type: Package
+Title: Create PC plots and Scree plots
+Version: 0.1.0
+Authors@R: person("Seiji", "Koike", email = "seijikoike@gmail.com", role = c("aut", "cre"))
+Description: Plots principal components of the user's choice against each other and scree plots
+LazyData: true
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

@@ -12,12 +12,15 @@
 #' data(trees)
 #' scree(trees, cor = TRUE, rounded = 2)
 
-scree <- function(data, cor = TRUE, rounded = 4, cumulative = TRUE){
+scree <- function(data, cor = TRUE, round = 4, cumulative = TRUE){
   x <- princomp(data, cor = cor)
   vars <- x$sdev^2
   props <- if(cumulative == TRUE) cumsum(x$sdev^2)/sum(x$sdev^2) else x$sdev^2/sum(x$sdev^2)
-  comps <- paste("Comp.", 1:ncol(x$loadings))
-  df <- data.frame(Variance = vars, Proportion = round(props, rounded), Component = comps)
+  comps <- paste("Comp.", 1:ncol(data))
+  df <- data.frame(Variance = vars, Proportion = round(props, round), Component = comps)
+  df$Component <- factor(df$Component,
+                         levels = df$Component[order(df$Variance,
+                                                     decreasing = TRUE)])
 
   p <- ggplot(df, aes(x = Component, y = Variance, group = 1)) +
     geom_line() +
@@ -27,6 +30,8 @@ scree <- function(data, cor = TRUE, rounded = 4, cumulative = TRUE){
                                   max(df$Variance) + .1*max(df$Variance))) +
     ggtitle("Scree Plot of Principal Components") +
     theme(axis.line = element_line(colour = "black"),
-          plot.title = element_text(hjust = 0.5))
+          plot.title = element_text(hjust = 0.5)) +
+    labs(y = "Variance (Eigenvalue)") +
+    geom_hline(yintercept = 1, linetype = "dashed")
   return(p)
 }

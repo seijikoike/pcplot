@@ -4,16 +4,16 @@
 \alias{scree}
 \title{Scree Plot Function}
 \usage{
-scree(data, cor = TRUE, rounded = 4, cumulative = TRUE)
+scree(data, cor = TRUE, round = 4, cumulative = TRUE)
 }
 \arguments{
 \item{data}{A set of predictor values}
 
 \item{cor}{Indicates to use correlation for PCA. Defaults to TRUE}
 
-\item{rounded}{Rounds the contribution of a PC to a specific number of decimal places. Defaults to 4.}
-
 \item{cumulative}{Tells scree whether to display the cumulative contribution of PCs or the individual. Defaults to TRUE.}
+
+\item{rounded}{Rounds the contribution of a PC to a specific number of decimal places. Defaults to 4.}
 }
 \description{
 Takes a princomp object and returns a scree plot using ggplot2
